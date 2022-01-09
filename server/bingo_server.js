@@ -24,8 +24,10 @@ const BINGO_CHECK_TIME = 5;
 let rooms = {};
 let joined = {};
 const bingos = {};
+var isInLocalMode = false;
 
 //!!start:onlydist!!
+//isInLocalMode = true;
 //var rooms = {
 //    "Equacions Local": {id:"Equacions Local", idUser:"Admin-local", nick:"Admin-local", type: "eqn", created: new Date()},
 //    "Clàssic Local": {id:"Clàssic Local", idUser:"Admin-local", nick:"Admin-local", type: "cla", created: new Date()},
@@ -261,6 +263,22 @@ io.on("connection", function(socket) {
             }, 2000*BINGO_CHECK_TIME);
         });
 
+        // TODO: Detect if the bot must be activated or not!
+        // Now only in local mode
+        if(isInLocalMode) {
+            bingo.on("bot", function(resCode){
+                // Bot claims line or bingo if resCode > 0
+                if(resCode == 1) {
+                    // Inform to all participants in the room that the linia is correct
+                    io.to(k.id).emit("bingo:linea", {res: [true], user: {idUser: "localBot", nick: "localBot"}}); 
+                } else if(resCode == 2) {
+                    // Inform to all participants in the room that the bingo is correct
+                    io.to(k.id).emit("bingo:bingo", {res: [true], user: {idUser: "localBot", nick: "localBot"}});
+                }
+            });
+        }
+
+
         // Inform to all other participants in the room
         io.to(k.id).emit("bingo:start", k.id);
 
@@ -299,6 +317,14 @@ io.on("connection", function(socket) {
 
     socket.on("bingo:asknext", function(k, cb) {
         console.log("asknext", k);
+        if(isInLocalMode) {
+            if(bingos[k.id] && bingos[k.id].canSendNext(k.user.idUser, null)) {
+                console.log("OK. Hauria d'enviar el següent");
+                cb && cb(true)
+                return;
+            }
+            return;
+        }
         // Asks for the next ball 
         // if all users have asked then timer stops and sends the next ball
         if(bingos[k.id]) {
@@ -332,7 +358,7 @@ io.on("connection", function(socket) {
             //Informa'm només a jo (no molestis als altres)
             socket.emit("bingo:bingo", {res: testRes, user: k.user});
         } else {
-            // Inform to all participants in the room that the linia is correct
+            // Inform to all participants in the room that the bingo is correct
             io.to(k.id).emit("bingo:bingo", {res: testRes, user: k.user});
         }
         setTimeout(function(){

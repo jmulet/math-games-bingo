@@ -4,6 +4,7 @@
  * 
  * **/
 var BingoUtils = require("BingoUtils");
+var Cartro = require("cartro");
 
 angular.module('bingoApp.services', [])
     .value('version', '0.1')
@@ -429,7 +430,7 @@ var GameCtrl = function($scope, $rootScope, $state, cfg, socket, growl, $interva
 
 
     $scope.balls = [];  
-    $scope.cartro = new BingoUtils.Cartro(); 
+    $scope.cartro = new Cartro(); 
     $scope.mute = false;
 
     $scope.newCartro = function() {

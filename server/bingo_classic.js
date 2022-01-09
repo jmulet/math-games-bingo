@@ -5,7 +5,7 @@ const NUM_COLS_NB = 3;
 const BALL_INTERVAL = 5;
 const U = require('./utils');
 const Timer = require('./timer');
-
+const BotPlayer = require('./bot_player');
 
 
 const BasicGenerator = function() {
@@ -17,11 +17,14 @@ BasicGenerator.prototype._createBall = function(id, number, remaining) {
 
 
 function BingoClassic() {
+    // All bingos have a bot player
+    this.bot = new BotPlayer();
     this.generator = new BasicGenerator();
     this.isPlaying = false;
     this.askedParticipants = [];
     this.gameoverNotifiers = [];
     this.nextballNotifiers = [];
+    this.botNotifiers = [];
     this.timer = null;
     this.lineaOwner = null;
     this.winner = null;
@@ -37,10 +40,19 @@ function BingoClassic() {
             }
             // launch next interval
             self.timer.play(nextBall.ttl || BALL_INTERVAL);
+            // notify the bot 
+            self.bot.receiveBall(nextBall, self.nombres_trets, function(resCode){
+                // receive news from bot and notify to the bingo_server
+                for (var i = 0, ln=self.botNotifiers.length; i < ln; i++) { 
+                    self.botNotifiers[i](resCode);
+                }
+            });
         } else {
             for (var i = 0, ln=self.gameoverNotifiers.length; i < ln; i++) { 
                 self.gameoverNotifiers[i](null);
             } 
+            self.bot.disableBingo();
+            self.bot.disableLine();
         }
     }, BALL_INTERVAL);
 };
@@ -137,12 +149,15 @@ BingoClassic.prototype.on = function(evtname, cb) {
         this.nextballNotifiers.push(cb);
     } else if(evtname === "gameover") {
         this.gameoverNotifiers.push(cb);
+    } else if(evtname === "bot") {
+        this.botNotifiers.push(cb);
     }
 };
 BingoClassic.prototype.off = function() {
     this.isPlaying = false;
     this.nextballNotifiers = [];
     this.gameoverNotifiers = [];
+    this.botNotifiers = [];
     this.timer && this.timer.pause();
     this.timer = null;
 };
@@ -162,7 +177,7 @@ BingoClassic.prototype.canSendNext = function(idUser, currentParticipants) {
     if(this.askedParticipants.indexOf(idUser) < 0) {
         this.askedParticipants.push(idUser);
     }
-    if(U.equalSets(this.askedParticipants, currentParticipants)) {
+    if(currentParticipants == null || U.equalSets(this.askedParticipants, currentParticipants)) {
         this.timer && this.timer.pause();
         this.timer && this.timer.play(1);
         this.askedParticipants = []; 

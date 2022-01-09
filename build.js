@@ -113,6 +113,12 @@ sutils = loader + "\n" + sutils
 let stimer = fs.readFileSync(path.join(srcServer, "timer.js"), "utf8") 
 stimer = packModule("timer", [stimer]);
 
+let botPlayer = fs.readFileSync(path.join(srcServer, "bot_player.js"), "utf8") 
+botPlayer = packModule("bot_player", [botPlayer]);
+
+let cartro = fs.readFileSync(path.join(srcServer, "cartro.js"), "utf8") 
+cartro = packModule("cartro", [cartro]);
+
 let sclassic = fs.readFileSync(path.join(srcServer, "bingo_classic.js"), "utf8") 
 sclassic = packModule("bingo_classic", [sclassic]);
 
@@ -151,8 +157,10 @@ fs.writeFileSync(path.join(autoClient, "dif_generator.js"), sderivades);
 fs.writeFileSync(path.join(autoClient, "eqn_generator.js"), sequacions);
 fs.writeFileSync(path.join(autoClient, "num_generator.js"), snumeric);
 fs.writeFileSync(path.join(autoClient, "che_generator.js"), squimica);
+fs.writeFileSync(path.join(autoClient, "bot_player.js"), botPlayer);
+fs.writeFileSync(path.join(autoClient, "cartro.js"), cartro);
 
-let bundle = [sutils, stimer, sclassic, sderivades, sequacions, snumeric, squimica, sbu, theapp]
+let bundle = [sutils, cartro, stimer, botPlayer, sclassic, sderivades, sequacions, snumeric, squimica, sbu, theapp]
 bundle = bundle.join("\n");
 fs.writeFileSync(path.join(dst, "bundle.js"), bundle);
 

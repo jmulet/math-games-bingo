@@ -6,7 +6,7 @@ window.require = function(modname) {
 };
 
 
-// Automatically generated on Wed Jan 05 2022 17:51:25 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
+// Automatically generated on Sun Jan 09 2022 19:24:40 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
 window._modules["utils"] = {exports: {}};
 (function(module){
 var extend = function (child, parent) {
@@ -99,7 +99,161 @@ module.exports = {
 }(window._modules["utils"] ));
 
 
-// Automatically generated on Wed Jan 05 2022 17:51:25 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
+// Automatically generated on Sun Jan 09 2022 19:24:40 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
+window._modules["cartro"] = {exports: {}};
+(function(module){
+/**
+ * Utilitats per al joc de Bingo 
+ * @author Josep Mulet Pol
+ * @date 2021-2022
+ */
+
+var U = require("utils");
+
+var Cell = function (value, selected) {
+    this.value = value;
+    this.selected = selected;
+};
+Cell.prototype.clear = function () {
+    this.value = null;
+    this.selected = false;
+};
+Cell.prototype.toggle = function (enabled) { 
+    if (!enabled) {
+        return;
+    }
+    this.selected = !this.selected;
+};
+
+var NUM_COLS_NB = 3;
+var Cartro = function () {
+    this.nrows = 3;
+    this.ncols = 6;
+    this.rows = [];
+    for (var i = 0; i < this.nrows; i++) {
+        var aRow = [];
+        for (var j = 0; j < this.ncols; j++) {
+            aRow.push(new Cell(null, false));
+        }
+        this.rows.push(aRow);
+    }
+    this.generate();
+};
+Cartro.prototype = {
+    generate: function () {
+        // For every row, must set 3 cells as void
+        var void_candidates = [];
+        for (var i = 0; i < this.nrows; i++) {
+            void_candidates.push(U.sort(U.shuffle(U.range(0, this.ncols - 1)), 3));
+        }
+        // For every col, up to 3 values in a given range 
+        var a = 1;
+        for (var j = 0; j < this.ncols; j++) {
+            var cols_candidates = U.sort(U.shuffle(U.range(a, a + 4)), this.nrows);
+            var posIndx = 0;
+            for (var i = 0; i < this.nrows; i++) {
+                var val = null;
+                if (void_candidates[i].indexOf(j) < 0) {
+                    val = cols_candidates[posIndx];
+                    posIndx++;
+                }
+                this.getCellAt(i, j).value = val;
+            }
+            a += 5;
+        }
+    },
+    clear: function () {
+        for (var i = 0; i < this.nrows; i++) {
+            for (var j = 0; j < this.ncols; j++) {
+                this.getCellAt(i, j).clear();
+            }
+        }
+    },
+    getRows: function () {
+        return this.rows;
+    },
+    getCellAt: function (i, j) {
+        return this.rows[i][j];
+    },
+    list: function () {
+        var flatList = [];
+        for (var i = 0; i < this.nrows; i++) {
+            var aRow = this.rows[i];
+            for (var j = 0; j < this.ncols; j++) {
+                var cell = aRow[j];
+                if (cell.value != null) {
+                    //non-void cell
+                    flatList.push(cell.selected ? cell.value : null);
+                }
+            }
+        }
+        return flatList;
+    },
+    testLine: function (userNumbers, nombres_trets) {
+        if(nombres_trets) {
+            this.nombres_trets = nombres_trets;
+        }
+        // User numbers is a list 3x3, null indicate that is not selected
+        var firstWrong = -1;
+        for (var i = 0; i < this.nrows; i++) {
+            var teLinia = true;
+            for (var j = 0; j < NUM_COLS_NB; j++) {
+                var indx = i * NUM_COLS_NB + j;
+                var valor = userNumbers[indx];
+                if (valor == null) {
+                    // Not set --> this is not a line 
+                    teLinia = false;
+                    break;
+                }
+                teLinia = this.nombres_trets.indexOf(valor) >= 0;
+                if (!teLinia) {
+                    firstWrong = indx;
+                    break;
+                }
+            }
+            if (teLinia) {
+                return [true];
+            }
+        }
+        return [false, firstWrong];
+    },
+    testBingo: function (userNumbers, nombres_trets) {
+        if(nombres_trets) {
+            this.nombres_trets = nombres_trets;
+        }
+        // User numbers is a list 3x3, null indicate that is not selected
+        // if a null is found, must return false
+        for (var i = 0; i < this.nrows; i++) {
+            for (var j = 0; j < NUM_COLS_NB; j++) {
+                var indx = i * NUM_COLS_NB + j;
+                var valor = userNumbers[indx];
+                if (valor == null || this.nombres_trets.indexOf(valor) < 0) {
+                    return [false, indx];
+                }
+            }
+        } 
+        return [true];
+    },
+    mark: function(num) {
+        for (var i = 0; i < this.nrows; i++) {
+            for (var j = 0; j < NUM_COLS_NB; j++) { 
+                var celda = this.getCellAt(i,j);
+                if (celda.value!=null && celda.value == num) { 
+                    celda.selected = true;
+                    return;
+                }
+            }
+        } 
+    }
+};
+
+
+module.exports = Cartro;
+
+}(window._modules["cartro"] ));
+
+
+// Automatically generated on Sun Jan 09 2022 19:24:40 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
 window._modules["timer"] = {exports: {}};
 (function(module){
 var Timer = function (cb, delay) {
@@ -144,7 +298,58 @@ module.exports = Timer;
 }(window._modules["timer"] ));
 
 
-// Automatically generated on Wed Jan 05 2022 17:51:25 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
+// Automatically generated on Sun Jan 09 2022 19:24:40 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
+window._modules["bot_player"] = {exports: {}};
+(function(module){
+// The bingo_server communicates with the bot player
+var Cartro = require("cartro");
+
+var BotPlayer = function () {
+    this.lineAllowed = true;
+    this.bingoAllowed = true;
+    this.cartro = new Cartro();
+    this.cartro.generate();
+};
+BotPlayer.prototype.disableLine = function () {
+    this.lineAllowed = false;
+};
+BotPlayer.prototype.disableBingo = function () {
+    this.bingoAllowed = false;
+};
+BotPlayer.prototype.receiveBall = function (ball, nombresTrets, cbResponse) {
+    // Notify with a promise to mimic delays
+    // 0 --> I have nothing
+    // 1 --> I have line
+    // 2 --> I have bingo
+    var self = this;
+    this.cartro.mark(ball.number);
+    var resCode = 0;
+    var flatten = self.cartro.list();
+    if (self.lineAllowed) {
+        var teLinea = self.cartro.testLine(flatten, nombresTrets);
+        if(teLinea) {
+            self.lineAllowed = false;
+        }
+        resCode = teLinea ? 1 : 0;
+    } else if (self.bingoAllowed) {
+        var teBingo = self.cartro.tetBingo(flatten, nombresTrets);
+        if(teBingo) {
+            self.lineAllowed = false;
+        }
+        resCode = teBingo ? 2 : 0;
+    }
+    window.setTimeout(function() {
+        cbResponse(resCode);
+    }, 700 * ball.ttl)
+
+};
+
+
+module.exports = BotPlayer;
+}(window._modules["bot_player"] ));
+
+
+// Automatically generated on Sun Jan 09 2022 19:24:40 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
 window._modules["bingo_classic"] = {exports: {}};
 (function(module){
 var NUM_BOLLES = 30;
@@ -154,7 +359,7 @@ var NUM_COLS_NB = 3;
 var BALL_INTERVAL = 5;
 var U = require('./utils');
 var Timer = require('./timer');
-
+var BotPlayer = require('./bot_player');
 
 
 var BasicGenerator = function() {
@@ -166,11 +371,14 @@ BasicGenerator.prototype._createBall = function(id, number, remaining) {
 
 
 function BingoClassic() {
+    // All bingos have a bot player
+    this.bot = new BotPlayer();
     this.generator = new BasicGenerator();
     this.isPlaying = false;
     this.askedParticipants = [];
     this.gameoverNotifiers = [];
     this.nextballNotifiers = [];
+    this.botNotifiers = [];
     this.timer = null;
     this.lineaOwner = null;
     this.winner = null;
@@ -186,10 +394,19 @@ function BingoClassic() {
             }
             // launch next interval
             self.timer.play(nextBall.ttl || BALL_INTERVAL);
+            // notify the bot 
+            self.bot.receiveBall(nextBall, self.nombres_trets, function(resCode){
+                // receive news from bot and notify to the bingo_server
+                for (var i = 0, ln=self.botNotifiers.length; i < ln; i++) { 
+                    self.botNotifiers[i](resCode);
+                }
+            });
         } else {
             for (var i = 0, ln=self.gameoverNotifiers.length; i < ln; i++) { 
                 self.gameoverNotifiers[i](null);
             } 
+            self.bot.disableBingo();
+            self.bot.disableLine();
         }
     }, BALL_INTERVAL);
 };
@@ -286,12 +503,15 @@ BingoClassic.prototype.on = function(evtname, cb) {
         this.nextballNotifiers.push(cb);
     } else if(evtname === "gameover") {
         this.gameoverNotifiers.push(cb);
+    } else if(evtname === "bot") {
+        this.botNotifiers.push(cb);
     }
 };
 BingoClassic.prototype.off = function() {
     this.isPlaying = false;
     this.nextballNotifiers = [];
     this.gameoverNotifiers = [];
+    this.botNotifiers = [];
     this.timer && this.timer.pause();
     this.timer = null;
 };
@@ -311,7 +531,7 @@ BingoClassic.prototype.canSendNext = function(idUser, currentParticipants) {
     if(this.askedParticipants.indexOf(idUser) < 0) {
         this.askedParticipants.push(idUser);
     }
-    if(U.equalSets(this.askedParticipants, currentParticipants)) {
+    if(currentParticipants == null || U.equalSets(this.askedParticipants, currentParticipants)) {
         this.timer && this.timer.pause();
         this.timer && this.timer.play(1);
         this.askedParticipants = []; 
@@ -335,7 +555,7 @@ module.exports = BingoClassic;
 }(window._modules["bingo_classic"] ));
 
 
-// Automatically generated on Wed Jan 05 2022 17:51:25 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
+// Automatically generated on Sun Jan 09 2022 19:24:40 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
 window._modules["dif_generator"] = {exports: {}};
 (function(module){
 var U = require('./utils');  
@@ -354,7 +574,7 @@ module.exports = DifGenerator;
 }(window._modules["dif_generator"] ));
 
 
-// Automatically generated on Wed Jan 05 2022 17:51:25 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
+// Automatically generated on Sun Jan 09 2022 19:24:40 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
 window._modules["eqn_generator"] = {exports: {}};
 (function(module){
 var U = require('./utils');  
@@ -454,7 +674,7 @@ module.exports = EqnGenerator;
 }(window._modules["eqn_generator"] ));
 
 
-// Automatically generated on Wed Jan 05 2022 17:51:25 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
+// Automatically generated on Sun Jan 09 2022 19:24:40 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
 window._modules["num_generator"] = {exports: {}};
 (function(module){
 var U = require('./utils');  
@@ -519,7 +739,7 @@ module.exports = NumGenerator;
 }(window._modules["num_generator"] ));
 
 
-// Automatically generated on Wed Jan 05 2022 17:51:25 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
+// Automatically generated on Sun Jan 09 2022 19:24:40 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
 window._modules["che_generator"] = {exports: {}};
 (function(module){
 var U = require('./utils');  
@@ -544,9 +764,7 @@ module.exports = CheGenerator;
  */
 window._modules["BingoUtils"] = {exports: {}};
 
-(function (module) { 
-
-    var U = require("utils");
+(function (module) {  
 
     var findVoice = function (lang, voices) {
         lang = (lang || "").toLowerCase();
@@ -585,90 +803,8 @@ window._modules["BingoUtils"] = {exports: {}};
     if (!supported) {
         console.error("Voices not supported");    
     }
-
-    var Cell = function(value, selected) {
-        this.value = value;
-        this.selected = selected;
-    };
-    Cell.prototype.clear = function() {
-        this.value = null;
-        this.selected = false;
-    }; 
-    Cell.prototype.toggle = function(enabled) {
-        console.log("Cell toogle ", enabled);
-        if(!enabled) {
-            return;
-        }
-        this.selected = !this.selected;
-    }; 
-
-    var Cartro = function () { 
-        this.nrows = 3;
-        this.ncols = 6;
-        this.rows = [];
-        for (var i = 0; i < this.nrows; i++) {
-            var aRow = [];
-            for (var j = 0; j < this.ncols; j++) {
-                aRow.push(new Cell(null, false));
-            }
-            this.rows.push(aRow);     
-        }
-        this.generate();
-    };
-    Cartro.prototype = {
-        generate: function () { 
-            // For every row, must set 3 cells as void
-            var void_candidates = [];
-            for (var i = 0; i < this.nrows; i++) {
-                void_candidates.push(U.sort(U.shuffle(U.range(0, this.ncols - 1)), 3));
-            }
-            // For every col, up to 3 values in a given range 
-            var a = 1;
-            for (var j = 0; j < this.ncols; j++) {
-                var cols_candidates = U.sort(U.shuffle(U.range(a, a + 4)), this.nrows);
-                var posIndx = 0;
-                for (var i = 0; i < this.nrows; i++) {
-                    var val = null;
-                    if (void_candidates[i].indexOf(j) < 0) {
-                        val = cols_candidates[posIndx];
-                        posIndx++;
-                    }
-                    this.getCellAt(i, j).value = val;
-                }
-                a += 5;
-            }
-        },
-        clear: function () {
-            for (var i = 0; i < this.nrows; i++) {
-                for (var j = 0; j < this.ncols; j++) {
-                    this.getCellAt(i, j).clear();
-                }
-            }
-        },
-        getRows: function () {
-            return this.rows;
-        }, 
-        getCellAt: function (i, j) {
-            return this.rows[i][j];
-        },
-        list: function() {
-            var flatList = [];
-            for (var i = 0; i < this.nrows; i++) {
-                var aRow = this.rows[i];
-                for (var j = 0; j < this.ncols; j++) {
-                    var cell = aRow[j];
-                    if(cell.value != null) {
-                        //non-void cell
-                        flatList.push(cell.selected? cell.value: null);
-                    }
-                }    
-            }
-            return flatList;
-        }
-    };
-
-    module.exports = {
-        Cartro: Cartro,
+  
+    module.exports = { 
         speak: speak
     } 
 
@@ -887,8 +1023,10 @@ var BINGO_CHECK_TIME = 5;
 var rooms = {};
 var joined = {};
 var bingos = {};
+var isInLocalMode = false;
 
 
+isInLocalMode = true;
 var rooms = {
     "Equacions Local": {id:"Equacions Local", idUser:"Admin-local", nick:"Admin-local", type: "eqn", created: new Date()},
     "Clàssic Local": {id:"Clàssic Local", idUser:"Admin-local", nick:"Admin-local", type: "cla", created: new Date()},
@@ -1124,6 +1262,22 @@ ioServerLocal.on("connection", function(socket) {
             }, 2000*BINGO_CHECK_TIME);
         });
 
+        // TODO: Detect if the bot must be activated or not!
+        // Now only in local mode
+        if(isInLocalMode) {
+            bingo.on("bot", function(resCode){
+                // Bot claims line or bingo if resCode > 0
+                if(resCode == 1) {
+                    // Inform to all participants in the room that the linia is correct
+                    ioServerLocal.to(k.id).emit("bingo:linea", {res: [true], user: {idUser: "localBot", nick: "localBot"}}); 
+                } else if(resCode == 2) {
+                    // Inform to all participants in the room that the bingo is correct
+                    ioServerLocal.to(k.id).emit("bingo:bingo", {res: [true], user: {idUser: "localBot", nick: "localBot"}});
+                }
+            });
+        }
+
+
         // Inform to all other participants in the room
         ioServerLocal.to(k.id).emit("bingo:start", k.id);
 
@@ -1162,6 +1316,14 @@ ioServerLocal.on("connection", function(socket) {
 
     socket.on("bingo:asknext", function(k, cb) {
         console.log("asknext", k);
+        if(isInLocalMode) {
+            if(bingos[k.id] && bingos[k.id].canSendNext(k.user.idUser, null)) {
+                console.log("OK. Hauria d'enviar el següent");
+                cb && cb(true)
+                return;
+            }
+            return;
+        }
         // Asks for the next ball 
         // if all users have asked then timer stops and sends the next ball
         if(bingos[k.id]) {
@@ -1195,7 +1357,7 @@ ioServerLocal.on("connection", function(socket) {
             //Informa'm només a jo (no molestis als altres)
             socket.emit("bingo:bingo", {res: testRes, user: k.user});
         } else {
-            // Inform to all participants in the room that the linia is correct
+            // Inform to all participants in the room that the bingo is correct
             ioServerLocal.to(k.id).emit("bingo:bingo", {res: testRes, user: k.user});
         }
         setTimeout(function(){
@@ -1215,6 +1377,7 @@ ioServerLocal.on("connection", function(socket) {
  * 
  * **/
 var BingoUtils = require("BingoUtils");
+var Cartro = require("cartro");
 
 angular.module('bingoApp.services', [])
     .value('version', '0.1')
@@ -1640,7 +1803,7 @@ var GameCtrl = function($scope, $rootScope, $state, cfg, socket, growl, $interva
 
 
     $scope.balls = [];  
-    $scope.cartro = new BingoUtils.Cartro(); 
+    $scope.cartro = new Cartro(); 
     $scope.mute = false;
 
     $scope.newCartro = function() {
