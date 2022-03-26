@@ -34,9 +34,9 @@
                 </div>
                 <center>
                     <br>
-                    <button class="btn btn-outline-info" style="width: 200px" id="submit1" ng-click="onsubmit($event, 'offline')">Juga contra l'ordinador</button>
+                    <button class="btn btn-primary" style="width: 250px;margin:10px;padding:10px;" id="submit1" ng-click="onsubmit($event, 'offline')">Juga contra l'ordinador</button>
                     <br>
-                    <button class="btn" ng-class="{'btn-outline-success': method.hasConnection, 'btn-outline-secondary': !method.hasConnection}" style="width:200px" id="submit2" ng-click="onsubmit($event, 'online')" ng-disabled="!mode.hasConnection">Joc multi-jugador</button>
+                    <button class="btn" ng-class="{'btn-success': method.hasConnection, 'btn-secondary': !method.hasConnection}" style="width:250px;margin:10px;padding:10px;" id="submit2" ng-click="onsubmit($event, 'online')" ng-disabled="!mode.hasConnection">Joc multi-jugador</button>
                 </center>
 
                 <p><br></p>
@@ -65,8 +65,10 @@
             <div class="view view_rooms">
                 <bingo-header info="headerInfo"></bingo-header>
                 <br>  
+                <center>
                 <h3 class="text-bright">Sales disponibles  <em>{{mode.method}}</em>
-                    <button ng-show="mode.hasConnection" class="btn btn-sm btn-success btn-round" id="create_room" title="Crear una nova sala" ng-click="newroom()">
+                </center>   
+                    <button ng-show="mode.hasConnection!='offline' && mode.hasConnection" class="btn btn-sm btn-success btn-round" id="create_room" title="Crear una nova sala" ng-click="newroom()">
                         <span>+</span> </button>
                     </h3>
                 <br>
@@ -87,12 +89,16 @@
             <div class="view view_game">
                 <bingo-header info="headerInfo"></bingo-header>
                 
-                <button  ng-click="mute=!mute">Veu {{!mute}}</button>
+                <button class="btn btn-secondary" ng-click="mute=!mute" title="Activa/desactiva el so">
+                   <span ng-class="{'pwi-unmute':!mute, 'pwi-mute':mute}"></span>
+                </button>
 
+                <center>
                 <h3 class="text-bright" ng-show="!bingoStarted">Tria un cartró</h3>
+                </center>
                 <div id="cartro_panell">
                     <center>
-                        <button ng-show="!bingoStarted" ng-click="newCartro()">Genera</button>
+                        <button class="btn btn-success" ng-show="!bingoStarted" ng-click="newCartro()">Genera</button>
                         <bingo-cartro cartro="cartro" bingo-started="bingoStarted"></bingo-cartro>
                     <center>
 
@@ -108,28 +114,30 @@
 
                 <br> 
                 <div ng-show="!bingoStarted">
-                    <button class="btn btn-primary" ng-show="!mode.hasConnection || currentRoom.idUser==headerInfo.idUser" id="notice_startgame" 
+                    <center>
+                    <button class="btn btn-primary" ng-show="mode.method=='offline' || !mode.hasConnection || currentRoom.idUser==headerInfo.idUser" id="notice_startgame" 
                     ng-click="onSubmitStart()" ng-if="canSubmitStart">
                         Començar la partida
                     </button>  
-                    
-                    <p ng-show="mode.hasConnection && currentRoom.idUser!=headerInfo.idUser">
+                    </center>
+                    <p ng-show="mode.method!='offline' && mode.hasConnection && currentRoom.idUser!=headerInfo.idUser">
                         Esperant que {{currentRoom.nick}} iniciï la partida ...
                     </p> 
 
                 </div>
+                <!--
                 <div ng-show="bingoStarted">
-                    <button class="btn btn-secondary" ng-click="sortirJoc()">
+                    <button class="btn btn-sm btn-warning" ng-click="sortirJoc()">
                         Sortir de la partida
                     </button>
                 </div>
-
-                <div style="width:80%;background:#483232;border:1px dotted yellow; padding:20px;margin:10px auto;">
+            -->
+                <div class="balls_container">
                 <!--<div growl inline="true" reference="2"></div>-->
                 <p ng-show="bingoStarted">
                     Queden {{remainBalls}} bolles  <span ng-show="!isGameover"> -  Propera bolla en</span> <span ng-show="!isGameover" ng-class="{'blink_me': (remainTime<=5)}">{{remainTime | minsec}}</span>
 
-                    -  <button ng-show="!isGameover" ng-click="askNext()" ng-disabled="nextAsked || remainTime <=5">Demana la següent</button>
+                    -  <button class="btn btn-sm btn-secondary" ng-show="!isGameover" ng-click="askNext()" ng-disabled="nextAsked || remainTime <=5">Demana la següent</button>
                     </p>
                 
                  <div style="overflow-y:auto;height:100px;">

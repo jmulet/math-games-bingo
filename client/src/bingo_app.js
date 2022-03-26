@@ -180,7 +180,7 @@ app.directive('bingoHeader', function() {
       '     <h3 ng-bind="headerInfo.typeName"></h3>'+
       ' </div>'+
       '<div class="room_exit" ng-show="headerInfo.id">'+
-      '     <p ng-click="headerInfo.exit()">EXIT</p>'+
+      '     <p ng-click="headerInfo.exit()" title="Sortir de la sala"><span class="pwi-exit"></span></p>'+
       '     <p ng-bind="headerInfo.id"></p>'+
       ' </div>'+
       '</div>'
@@ -303,11 +303,11 @@ var LandingCtrl = function($scope, $rootScope, $state, cfg, socket, growl) {
     socket.removeAllListeners();
     var cuser = cfg.getUser();
     $scope.flavors = [
-        {url: './classic.html', name: 'Clàssic', alias: "cla"},
-        {url: './operacions.html', name: 'Operacions', alias: "ope"},
-        {url: './equacions.html', name: 'Equacions', alias: "eqn"},
-        {url: './derivacio.html', name: 'Derivades', alias: "dif"},
-        {url: './quimica.html', name: 'Química', alias: "che"},
+        //{url: './classic.html', name: 'Clàssic', alias: "cla"},
+        //{url: './operacions.html', name: 'Operacions', alias: "ope"},
+        {url: './equacions.html', name: 'Equacions', alias: "eqn"}
+        //{url: './derivacio.html', name: 'Derivades', alias: "dif"},
+        //{url: './quimica.html', name: 'Química', alias: "che"},
     ];
     $scope.currentFlavor = window.BINGO_FLAVOR;
 

@@ -22,16 +22,18 @@ BotPlayer.prototype.receiveBall = function (ball, nombresTrets, cbResponse) {
     this.cartro.mark(ball.number);
     var resCode = 0;
     var flatten = self.cartro.list();
+    console.log("Flatten", flatten, " Nombres trets", nombresTrets);
     if (self.lineAllowed) {
-        var teLinea = self.cartro.testLine(flatten, nombresTrets);
+        var teLinea = self.cartro.testLine(flatten, nombresTrets)[0];
         if(teLinea) {
             self.lineAllowed = false;
         }
         resCode = teLinea ? 1 : 0;
     } else if (self.bingoAllowed) {
-        var teBingo = self.cartro.tetBingo(flatten, nombresTrets);
+        var teBingo = self.cartro.testBingo(flatten, nombresTrets)[0];
         if(teBingo) {
             self.lineAllowed = false;
+            self.bingoAllowed = false;
         }
         resCode = teBingo ? 2 : 0;
     }
