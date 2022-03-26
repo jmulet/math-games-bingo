@@ -6,7 +6,7 @@ window.require = function(modname) {
 };
 
 
-// Automatically generated on Sat Mar 26 2022 14:53:08 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
+// Automatically generated on Sat Mar 26 2022 15:07:45 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
 window._modules["utils"] = {exports: {}};
 (function(module){
 var extend = function (child, parent) {
@@ -99,7 +99,7 @@ module.exports = {
 }(window._modules["utils"] ));
 
 
-// Automatically generated on Sat Mar 26 2022 14:53:08 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
+// Automatically generated on Sat Mar 26 2022 15:07:45 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
 window._modules["cartro"] = {exports: {}};
 (function(module){
 /**
@@ -253,7 +253,7 @@ module.exports = Cartro;
 }(window._modules["cartro"] ));
 
 
-// Automatically generated on Sat Mar 26 2022 14:53:08 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
+// Automatically generated on Sat Mar 26 2022 15:07:45 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
 window._modules["timer"] = {exports: {}};
 (function(module){
 var Timer = function (cb, delay) {
@@ -298,7 +298,7 @@ module.exports = Timer;
 }(window._modules["timer"] ));
 
 
-// Automatically generated on Sat Mar 26 2022 14:53:08 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
+// Automatically generated on Sat Mar 26 2022 15:07:45 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
 window._modules["bot_player"] = {exports: {}};
 (function(module){
 // The bingo_server communicates with the bot player
@@ -340,7 +340,7 @@ BotPlayer.prototype.receiveBall = function (ball, nombresTrets, cbResponse) {
         }
         resCode = teBingo ? 2 : 0;
     }
-    window.setTimeout(function() {
+    setTimeout(function() {
         cbResponse(resCode);
     }, 700 * ball.ttl)
 
@@ -351,7 +351,7 @@ module.exports = BotPlayer;
 }(window._modules["bot_player"] ));
 
 
-// Automatically generated on Sat Mar 26 2022 14:53:08 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
+// Automatically generated on Sat Mar 26 2022 15:07:45 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
 window._modules["bingo_classic"] = {exports: {}};
 (function(module){
 var NUM_BOLLES = 30;
@@ -557,7 +557,7 @@ module.exports = BingoClassic;
 }(window._modules["bingo_classic"] ));
 
 
-// Automatically generated on Sat Mar 26 2022 14:53:08 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
+// Automatically generated on Sat Mar 26 2022 15:07:45 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
 window._modules["dif_generator"] = {exports: {}};
 (function(module){
 var U = require('./utils');  
@@ -576,7 +576,7 @@ module.exports = DifGenerator;
 }(window._modules["dif_generator"] ));
 
 
-// Automatically generated on Sat Mar 26 2022 14:53:08 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
+// Automatically generated on Sat Mar 26 2022 15:07:45 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
 window._modules["eqn_generator"] = {exports: {}};
 (function(module){
 var U = require('./utils');  
@@ -724,7 +724,7 @@ module.exports = EqnGenerator;
 }(window._modules["eqn_generator"] ));
 
 
-// Automatically generated on Sat Mar 26 2022 14:53:08 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
+// Automatically generated on Sat Mar 26 2022 15:07:45 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
 window._modules["num_generator"] = {exports: {}};
 (function(module){
 var U = require('./utils');  
@@ -789,7 +789,7 @@ module.exports = NumGenerator;
 }(window._modules["num_generator"] ));
 
 
-// Automatically generated on Sat Mar 26 2022 14:53:08 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
+// Automatically generated on Sat Mar 26 2022 15:07:45 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
 window._modules["che_generator"] = {exports: {}};
 (function(module){
 var U = require('./utils');  

@@ -1,5 +1,5 @@
 
-// Automatically generated on Sat Mar 26 2022 14:53:08 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
+// Automatically generated on Sat Mar 26 2022 15:07:45 GMT+0100 (Hora estàndard del Centre d’Europa). Do not modify.
 window._modules["bot_player"] = {exports: {}};
 (function(module){
 // The bingo_server communicates with the bot player
@@ -41,7 +41,7 @@ BotPlayer.prototype.receiveBall = function (ball, nombresTrets, cbResponse) {
         }
         resCode = teBingo ? 2 : 0;
     }
-    window.setTimeout(function() {
+    setTimeout(function() {
         cbResponse(resCode);
     }, 700 * ball.ttl)
 

@@ -37,7 +37,7 @@ BotPlayer.prototype.receiveBall = function (ball, nombresTrets, cbResponse) {
         }
         resCode = teBingo ? 2 : 0;
     }
-    window.setTimeout(function() {
+    setTimeout(function() {
         cbResponse(resCode);
     }, 700 * ball.ttl)
 
